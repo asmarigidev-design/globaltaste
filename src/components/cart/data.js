@@ -6,7 +6,7 @@
 export const desserts = [  
 
   {  
-    category: { fa: 'دسرایرانی', en: 'Iranian Desserts', ar: 'الحلويات الايرانية' },  
+    category: { fa: 'ایرانی', en: 'Iranian Desserts', ar: 'الحلويات الايرانية' },  
     url: '#deseri',  
     img: '/images/5.jpg',  
     items: {  
@@ -16,7 +16,7 @@ export const desserts = [
     },  
   },  
   {  
-    category: { fa: 'دسرمدرن', en: 'Modern Desserts', ar: 'الحلويات الحديثة' },  
+    category: { fa: 'مدرن', en: 'Modern Desserts', ar: 'الحلويات الحديثة' },  
     url: '#dmodern',  
     img: '/images/6.jpg',  
     items: {  
@@ -26,7 +26,7 @@ export const desserts = [
     },  
   },  
   {  
-    category: { fa: 'دسرژله', en: 'Jelly Desserts', ar: 'حلويات الجيلي' },  
+    category: { fa: 'ژله', en: 'Jelly Desserts', ar: 'حلويات الجيلي' },  
     url: '#dghel',  
     img: '/images/3.jpeg',  
     items: {  
