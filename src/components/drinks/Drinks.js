@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import logo from './logo.jpeg';
 import { drinks } from './data.js';
 import { useTranslation } from 'react-i18next';
@@ -15,40 +15,56 @@ import { useTranslation } from 'react-i18next';
 // The component is designed hierarchically to support multi-level item display.
 //  By clicking on this card, the four submenus are separate components.
 
-function Drinks() {
-  const { t, i18n } = useTranslation();
-
-
-  const [menuVisible, setMenuVisible] = useState(true);
+function Drinks() 
+ {  const { t, i18n } = useTranslation();
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [shouldHide, setShouldHide] = useState(false);
+  const containerRef = useRef(null);
 
   const showCard = () => {
-    setMenuVisible(!menuVisible);
+    setMenuVisible(true);
+    setShouldHide(false); // وقتی روی کارت کلیک می‌شه، منو باز بمونه
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setShouldHide(true); // وقتی بیرون کلیک شد، کلاس showw اضافه بشه
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <section id="drinks">
+    <section id="cart">
+      <div className="cartt" ref={containerRef}>
+        <div className="em">
+          <div className="main" onClick={showCard}>
+            <h1>{t('titlen')}</h1>
+            <span>
+              <img src={logo} alt="img" />
+            </span>
+          </div>
 
-    <div className="cart" >
-      <div className='main' onClick={showCard} >
-      <span>
-
-<h1 data-aos="flip-right">{t('titlen')}</h1>
-  <img src={logo} alt="img" />
-</span>
-</div>
-<div className={` ${menuVisible ? 'show showw' : 'show'}`} >
-{drinks.map((drinks, index) => (
-  <ul key={index}>
-    <img src={drinks.img} alt="img" />
-    <a href={drinks.url}> <h1>{drinks.category[i18n.language]}</h1></a>
-    {drinks.items[i18n.language].map((item, idx) => (  
-      <li key={idx}>{item}</li>
-    ))}
-  </ul>
-))}
-</div>
-<h3>
+          <div className={`show ${shouldHide ? 'showw' : ''}`}>
+            {menuVisible &&
+              drinks.map((drink, index) => (
+                <ul key={index}>
+                  <img src={drink.img} alt="img" />
+                  <a href={drink.url}>
+                    <h1>{drink.category[i18n.language]}</h1>
+                  </a>
+                  {drink.items[i18n.language].map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              ))}
+          </div>
+        </div>
+        <h3>
   <h1>{t('titlen')} </h1>
   {t('textn')}
 </h3>

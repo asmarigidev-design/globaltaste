@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import logo from './logo.jpeg';
 import { cookies } from './data.js';
 import { useTranslation } from 'react-i18next';
@@ -14,39 +14,55 @@ import { useTranslation } from 'react-i18next';
 // The component is designed hierarchically to support multi-level item display.
 //  By clicking on this card, the four submenus are separate components.
 
-function Cookie() {
-  const { t, i18n } = useTranslation();  
-
-  const [menuVisible, setMenuVisible] = useState(true);
+function Cookie() {  const { t, i18n } = useTranslation();
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [shouldHide, setShouldHide] = useState(false);
+  const containerRef = useRef(null);
 
   const showCard = () => {
-    setMenuVisible(!menuVisible);
+    setMenuVisible(true);
+    setShouldHide(false); // وقتی روی کارت کلیک می‌شه، منو باز بمونه
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setShouldHide(true); // وقتی بیرون کلیک شد، کلاس showw اضافه بشه
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
-    <section id='sh'>
-    <div className="cart" >
-      <div className='main' onClick={showCard} >
+    <section id="cart">
+      <div className="cartt" ref={containerRef}>
+        <div className="em">
+          <div className="main" onClick={showCard}>
+            <h1>{t('titlesh')}</h1>
+            <span>
+              <img src={logo} alt="img" />
+            </span>
+          </div>
 
-<h1 data-aos="flip-right">{t('titlesh')}</h1>
-<span>
-  <img src={logo} alt="img" />
-</span>
-</div>
-<div className={` ${menuVisible ? 'show showw' : 'show'}`} >
-{cookies.map((cookie, index) => (
-  <ul key={index}>
-    <img src={cookie.img} alt="img" />
-   
-    <a href={cookie.url}> <h1>{cookie.category[i18n.language]}</h1></a>
+          <div className={`show ${shouldHide ? 'showw' : ''}`}>
+            {menuVisible &&
+              cookies.map((cookie, index) => (
+                <ul key={index}>
+                  <img src={cookie.img} alt="img" />
+                  <a href={cookie.url}>
+                    <h1>{cookie.category[i18n.language]}</h1>
+                  </a>
+                  {cookie.items[i18n.language].map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                </ul>
+              ))}
+          </div>
+        </div>
 
-    {cookie.items[i18n.language].map((item, idx) => (  
-      <li key={idx}>{item}</li>
-    ))}
-  </ul>
-))}
-</div>
 <h3>
   <h1>{t('titlesh')}</h1>
 {t('textsh')}
